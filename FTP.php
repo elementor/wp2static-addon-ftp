@@ -21,6 +21,9 @@ class WP2Static_FTP extends WP2Static_SitePublisher {
         $this->wp2static_core_dir =
             dirname( __FILE__ ) . '/../static-html-output-plugin';
 
+        $this->ftp_lib_path =
+            dirname( __FILE__ ) . '/includes/FTP';
+
         $this->previous_hashes_path =
             $this->settings['wp_uploads_path'] .
                 '/WP2STATIC-FTP-PREVIOUS-HASHES.txt';
@@ -62,12 +65,12 @@ class WP2Static_FTP extends WP2Static_SitePublisher {
 
         $this->openPreviousHashesFile();
 
-        require_once $this->wp2static_core_dir .
-            '/plugin/FTP/FtpClient.php';
-        require_once $this->wp2static_core_dir .
-            '/plugin/FTP/FtpException.php';
-        require_once $this->wp2static_core_dir .
-            '/plugin/FTP/FtpWrapper.php';
+        require_once $this->ftp_lib_path .
+            '/FtpClient.php';
+        require_once $this->ftp_lib_path .
+            '/FtpException.php';
+        require_once $this->ftp_lib_path .
+            '/FtpWrapper.php';
 
         $this->ftp = new \FtpClient\FtpClient();
 
@@ -140,12 +143,12 @@ class WP2Static_FTP extends WP2Static_SitePublisher {
     }
 
     public function test_ftp() {
-        require_once $this->wp2static_core_dir .
-            '/plugin/FTP/FtpClient.php';
-        require_once $this->wp2static_core_dir .
-            '/plugin/FTP/FtpException.php';
-        require_once $this->wp2static_core_dir .
-            '/plugin/FTP/FtpWrapper.php';
+        require_once $this->ftp_lib_path .
+            '/FtpClient.php';
+        require_once $this->ftp_lib_path .
+            '/FtpException.php';
+        require_once $this->ftp_lib_path .
+            '/FtpWrapper.php';
 
         $this->ftp = new \FtpClient\FtpClient();
 
