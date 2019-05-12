@@ -1,51 +1,28 @@
 <?php
 
-class WP2Static_FTP extends WP2Static_SitePublisher {
+namespace WP2Static;
+
+class FTP extends SitePublisher {
 
     public function __construct() {
-        $deploy_keys = array(
-          'ftp',
-          array(
-            'baseUrl-ftp',
-            'ftpPassword',
-            'ftpRemotePath',
-            'ftpServer',
-            'ftpPort',
-            'ftpTLS',
-            'ftpUsername',
-          ),
-        );
+        $plugin = Controller::getInstance();
 
-        $this->loadSettings( 'ftp', $deploy_keys );
+        $this->base_url = 'https://api.netlify.com';
 
-        $this->wp2static_core_dir =
-            dirname( __FILE__ ) . '/../static-html-output-plugin';
+        $this->batch_size = $plugin->options->getOption( 'deployBatchSize' );
 
-        $this->ftp_lib_path =
-            dirname( __FILE__ ) . '/includes/FTP';
+        $this->port = isset( $plugin->options->getOption( 'ftpPort' ) ) ?
+            $plugin->options->getOption( 'ftpPort' ) : 21;
 
+        $this->use_ftps = isset( $plugin->options->getOption( 'ftpTLS' ) );
+        $thia->ftp_server = $plugin->options->getOption( 'ftpServer' );
+
+        $this->ftp_username = $plugin->options->getOption( 'ftpUsername' );
+        $this->ftp_password = $plugin->options->getOption( 'ftpPassword' );
+        $this->active_ftp = $plugin->options->getOption( 'activeFTP' );
         $this->previous_hashes_path =
-            $this->settings['wp_uploads_path'] .
+            $plugin->options->getOption( 'wp_uploads_path' ) .
                 '/WP2STATIC-FTP-PREVIOUS-HASHES.txt';
-
-        if ( defined( 'WP_CLI' ) ) {
-            return; }
-
-        switch ( $_POST['ajax_action'] ) {
-            case 'ftp_prepare_export':
-                $this->bootstrap();
-                $this->loadArchive();
-                $this->prepareDeploy();
-                break;
-            case 'ftp_transfer_files':
-                $this->bootstrap();
-                $this->loadArchive();
-                $this->upload_files();
-                break;
-            case 'test_ftp':
-                $this->test_ftp();
-                break;
-        }
     }
 
     public function upload_files() {
@@ -55,42 +32,26 @@ class WP2Static_FTP extends WP2Static_SitePublisher {
             echo 'ERROR';
             die(); }
 
-        $batch_size = $this->settings['deployBatchSize'];
-
-        if ( $batch_size > $this->files_remaining ) {
-            $batch_size = $this->files_remaining;
+        if ( $this->batch_size > $this->files_remaining ) {
+            $this->batch_size = $this->files_remaining;
         }
 
-        $lines = $this->getItemsToDeploy( $batch_size );
+        $lines = $this->getItemsToDeploy( $this->batch_size );
 
         $this->openPreviousHashesFile();
 
-        require_once $this->ftp_lib_path .
-            '/FtpClient.php';
-        require_once $this->ftp_lib_path .
-            '/FtpException.php';
-        require_once $this->ftp_lib_path .
-            '/FtpWrapper.php';
-
-        $this->ftp = new \FtpClient\FtpClient();
-
-        $port = isset( $this->settings['ftpPort'] ) ?
-            $this->settings['ftpPort'] : 21;
-
-        $use_ftps = isset( $this->settings['ftpTLS'] );
-
         $this->ftp->connect(
-            $this->settings['ftpServer'],
-            $use_ftps,
-            $port
+            $this->ftp_server,
+            $this->use_ftps,
+            $this->port
         );
 
         $this->ftp->login(
-            $this->settings['ftpUsername'],
-            $this->settings['ftpPassword']
+            $this->ftp_username,
+            $this->ftp_password,
         );
 
-        if ( isset( $this->settings['activeFTP'] ) ) {
+        if ( isset( $this->activeFTP ) ) {
             $this->ftp->pasv( false );
         } else {
             $this->ftp->pasv( true );
@@ -104,9 +65,9 @@ class WP2Static_FTP extends WP2Static_SitePublisher {
             if ( ! is_file( $this->local_file ) ) {
                 continue; }
 
-            if ( isset( $this->settings['ftpRemotePath'] ) ) {
+            if ( isset( $plugin->options->getOption( 'ftpRemotePath' ) ) ) {
                 $this->target_path =
-                    $this->settings['ftpRemotePath'] . '/' . $this->target_path;
+                    $plugin->options->getOption( 'ftpRemotePath' ) . '/' . $this->target_path;
             }
 
             $this->local_file_contents = file_get_contents( $this->local_file );
@@ -152,21 +113,21 @@ class WP2Static_FTP extends WP2Static_SitePublisher {
 
         $this->ftp = new \FtpClient\FtpClient();
 
-        $port = isset( $this->settings['ftpPort'] ) ?
-            $this->settings['ftpPort'] : 21;
+        $this->port = isset( $plugin->options->getOption( 'ftpPort' ) ) ?
+            $plugin->options->getOption( 'ftpPort' ) : 21;
 
-        $use_ftps = isset( $this->settings['ftpTLS'] );
+        $this->use_ftps = isset( $plugin->options->getOption( 'ftpTLS' ) );
 
         $this->ftp->connect(
-            $this->settings['ftpServer'],
-            $use_ftps,
-            $port
+            $plugin->options->getOption( 'ftpServer' ),
+            $this->use_ftps,
+            $this->port
         );
 
         try {
             $this->ftp->login(
-                $this->settings['ftpUsername'],
-                $this->settings['ftpPassword']
+                $plugin->options->getOption( 'ftpUsername' ),
+                $plugin->options->getOption( 'ftpPassword' )
             );
 
             if ( ! defined( 'WP_CLI' ) ) {

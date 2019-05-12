@@ -3,10 +3,10 @@
 /**
  * Plugin Name:       WP2Static Add-on: FTP
  * Plugin URI:        https://wp2static.com
- * Description:       AWS FTP as a deployment option for WP2Static.
+ * Description:       FTP as a deployment option for WP2Static.
  * Version:           0.1
  * Author:            Leon Stafford
- * Author URI:        https://leonstafford.ftp.io
+ * Author URI:        https://ljs.dev
  * License:           Unlicense
  * License URI:       http://unlicense.org
  * Text Domain:       wp2static-addon-ftp
@@ -17,33 +17,34 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+define( 'WP2STATIC_NETLIFY_PATH', plugin_dir_path( __FILE__ ) );
+
+require WP2STATIC_NETLIFY_PATH . 'vendor/autoload.php';
+
 // @codingStandardsIgnoreStart
 $ajax_action = isset( $_POST['ajax_action'] ) ? $_POST['ajax_action'] : '';
 // @codingStandardsIgnoreEnd
 
-$wp2static_core_dir =
-    dirname( __FILE__ ) . '/../static-html-output-plugin';
-
-$add_on_dir = dirname( __FILE__ );
-
 if ( $ajax_action == 'test_ftp' ) {
-    require_once $wp2static_core_dir .
-        '/plugin/WP2Static/SitePublisher.php';
-    require_once $add_on_dir . '/FTP.php';
+    $ftp = new WP2Static\FTP();
+
+    $ftp->test_ftp();
 
     wp_die();
     return null;
 } elseif ( $ajax_action == 'ftp_prepare_export' ) {
-    require_once $wp2static_core_dir .
-        '/plugin/WP2Static/SitePublisher.php';
-    require_once $add_on_dir . '/FTP.php';
+    $ftp = new WP2Static\FTP();
+
+    $ftp->bootstrap();
+    $ftp->prepareDeploy();
 
     wp_die();
     return null;
 } elseif ( $ajax_action == 'ftp_transfer_files' ) {
-    require_once $wp2static_core_dir .
-        '/plugin/WP2Static/SitePublisher.php';
-    require_once $add_on_dir . '/FTP.php';
+    $ftp = new WP2Static\Netlify();
+
+    $ftp->bootstrap();
+    $ftp->upload_files();
 
     wp_die();
     return null;
@@ -51,14 +52,10 @@ if ( $ajax_action == 'test_ftp' ) {
 
 define( 'PLUGIN_NAME_VERSION', '0.1' );
 
-require plugin_dir_path( __FILE__ ) . 'includes/class-wp2static-addon-ftp.php';
-
 function run_wp2static_addon_ftp() {
-
-	$plugin = new Wp2static_Addon_FTP();
+	$plugin = new WP2Static\FTPAddon();
 	$plugin->run();
 
 }
 
 run_wp2static_addon_ftp();
-
