@@ -9,7 +9,7 @@ namespace WP2Static;
 
 use Exception;
 
-class FtpWrapper {
+class FTPWrapper {
 
     protected $conn;
     public function __construct( &$connection ) {

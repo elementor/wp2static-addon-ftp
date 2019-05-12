@@ -1,6 +1,6 @@
 <?php
 /**
- * FtpClient
+ * FTPClient
  *
  * @package WP2Static
  */
@@ -10,7 +10,7 @@ namespace WP2Static;
 use Countable;
 use Exception;
 
-class FtpClient implements Countable {
+class FTPClient implements Countable {
 
     protected $conn;
     private $ftp;
@@ -23,7 +23,7 @@ class FtpClient implements Countable {
             $this->conn = $connection;
         }
 
-        $this->setWrapper( new FtpWrapper( $this->conn ) );
+        $this->setWrapper( new FTPWrapper( $this->conn ) );
     }
     public function __destruct() {
         if ( $this->conn ) {
@@ -500,7 +500,7 @@ class FtpClient implements Countable {
                 return 'unknown';
         }
     }
-    protected function setWrapper( FtpWrapper $wrapper ) {
+    protected function setWrapper( FTPWrapper $wrapper ) {
         $this->ftp = $wrapper;
 
         return $this;
