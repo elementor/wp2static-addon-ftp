@@ -8,18 +8,16 @@ class FTP extends SitePublisher {
         $plugin = Controller::getInstance();
 
         $this->base_url = 'https://api.netlify.com';
-
         $this->batch_size = $plugin->options->getOption( 'deployBatchSize' );
-
         $this->port = isset( $plugin->options->getOption( 'ftpPort' ) ) ?
             $plugin->options->getOption( 'ftpPort' ) : 21;
-
         $this->use_ftps = isset( $plugin->options->getOption( 'ftpTLS' ) );
         $thia->ftp_server = $plugin->options->getOption( 'ftpServer' );
-
         $this->ftp_username = $plugin->options->getOption( 'ftpUsername' );
         $this->ftp_password = $plugin->options->getOption( 'ftpPassword' );
         $this->active_ftp = $plugin->options->getOption( 'activeFTP' );
+        $this->ftp_remote_path =
+            $plugin->options->getOption( 'ftpRemotePath' );
         $this->previous_hashes_path =
             $plugin->options->getOption( 'wp_uploads_path' ) .
                 '/WP2STATIC-FTP-PREVIOUS-HASHES.txt';
@@ -65,9 +63,9 @@ class FTP extends SitePublisher {
             if ( ! is_file( $this->local_file ) ) {
                 continue; }
 
-            if ( isset( $plugin->options->getOption( 'ftpRemotePath' ) ) ) {
+            if ( isset( $this->ftpRemotePath ) ) {
                 $this->target_path =
-                    $plugin->options->getOption( 'ftpRemotePath' ) . '/' . $this->target_path;
+                    $this->ftpRemotePath . '/' . $this->target_path;
             }
 
             $this->local_file_contents = file_get_contents( $this->local_file );
@@ -104,31 +102,16 @@ class FTP extends SitePublisher {
     }
 
     public function test_ftp() {
-        require_once $this->ftp_lib_path .
-            '/FtpClient.php';
-        require_once $this->ftp_lib_path .
-            '/FtpException.php';
-        require_once $this->ftp_lib_path .
-            '/FtpWrapper.php';
-
-        $this->ftp = new \FtpClient\FtpClient();
-
-        $this->port = isset( $plugin->options->getOption( 'ftpPort' ) ) ?
-            $plugin->options->getOption( 'ftpPort' ) : 21;
-
-        $this->use_ftps = isset( $plugin->options->getOption( 'ftpTLS' ) );
+        $this->ftp = new FtpClient();
 
         $this->ftp->connect(
-            $plugin->options->getOption( 'ftpServer' ),
+            $this->ftp_server,
             $this->use_ftps,
             $this->port
         );
 
         try {
-            $this->ftp->login(
-                $plugin->options->getOption( 'ftpUsername' ),
-                $plugin->options->getOption( 'ftpPassword' )
-            );
+            $this->ftp->login( $ftp_username, $ftp_password );
 
             if ( ! defined( 'WP_CLI' ) ) {
                 echo 'SUCCESS'; }
@@ -152,4 +135,3 @@ class FTP extends SitePublisher {
     }
 }
 
-$ftp = new WP2Static_FTP();

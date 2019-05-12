@@ -29,10 +29,12 @@ class FTPAddon {
     public function add_deployment_option_keys( $keys ) {
         $new_keys = array(
             'baseUrl-ftp',
-            'ftpHeaders',
-            'ftpPersonalAccessToken',
-            'ftpRedirects',
-            'ftpSiteID',
+            'ftpPassword',
+            'ftpRemotePath',
+            'ftpServer',
+            'ftpPort',
+            'ftpTLS',
+            'ftpUsername',
         );
 
         $keys = array_merge(
@@ -46,9 +48,11 @@ class FTPAddon {
     public function whitelist_deployment_option_keys( $keys ) {
         $whitelist_keys = array(
             'baseUrl-ftp',
-            'ftpHeaders',
-            'ftpRedirects',
-            'ftpSiteID',
+            'ftpRemotePath',
+            'ftpServer',
+            'ftpPort',
+            'ftpTLS',
+            'ftpUsername',
         );
 
         $keys = array_merge(
@@ -62,10 +66,12 @@ class FTPAddon {
     public function add_post_and_db_keys( $keys ) {
         $keys['ftp'] = array(
             'baseUrl-ftp',
-            'ftpHeaders',
-            'ftpPersonalAccessToken',
-            'ftpRedirects',
-            'ftpSiteID',
+            'ftpPassword',
+            'ftpRemotePath',
+            'ftpServer',
+            'ftpPort',
+            'ftpTLS',
+            'ftpUsername',
         );
 
         return $keys;
