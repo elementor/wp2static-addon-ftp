@@ -14,7 +14,7 @@
  */
 
 if ( ! defined( 'WPINC' ) ) {
-	die;
+    die;
 }
 
 define( 'WP2STATIC_FTP_PATH', plugin_dir_path( __FILE__ ) );
@@ -53,8 +53,8 @@ if ( $ajax_action == 'test_ftp' ) {
 define( 'PLUGIN_NAME_VERSION', '0.1' );
 
 function run_wp2static_addon_ftp() {
-	$plugin = new WP2Static\FTPAddon();
-	$plugin->run();
+    $plugin = new WP2Static\FTPAddon();
+    $plugin->run();
 
 }
 

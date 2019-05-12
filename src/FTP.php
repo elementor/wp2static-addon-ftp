@@ -9,9 +9,9 @@ class FTP extends SitePublisher {
 
         $this->base_url = 'https://api.netlify.com';
         $this->batch_size = $plugin->options->getOption( 'deployBatchSize' );
-        $this->port = isset( $plugin->options->getOption( 'ftpPort' ) ) ?
-            $plugin->options->getOption( 'ftpPort' ) : 21;
-        $this->use_ftps = isset( $plugin->options->getOption( 'ftpTLS' ) );
+        $port = $plugin->options->getOption( 'ftpPort' );
+        $this->port = $port ? $port : 21;
+        $this->use_ftps = $plugin->options->getOption( 'ftpTLS' );
         $thia->ftp_server = $plugin->options->getOption( 'ftpServer' );
         $this->ftp_username = $plugin->options->getOption( 'ftpUsername' );
         $this->ftp_password = $plugin->options->getOption( 'ftpPassword' );
@@ -46,10 +46,10 @@ class FTP extends SitePublisher {
 
         $this->ftp->login(
             $this->ftp_username,
-            $this->ftp_password,
+            $this->ftp_password
         );
 
-        if ( isset( $this->activeFTP ) ) {
+        if ( isset( $this->active_ftp ) ) {
             $this->ftp->pasv( false );
         } else {
             $this->ftp->pasv( true );
@@ -63,9 +63,9 @@ class FTP extends SitePublisher {
             if ( ! is_file( $this->local_file ) ) {
                 continue; }
 
-            if ( isset( $this->ftpRemotePath ) ) {
+            if ( isset( $this->ftp_remote_path ) ) {
                 $this->target_path =
-                    $this->ftpRemotePath . '/' . $this->target_path;
+                    $this->ftp_remote_path . '/' . $this->target_path;
             }
 
             $this->local_file_contents = file_get_contents( $this->local_file );
