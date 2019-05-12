@@ -17,9 +17,9 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'WP2STATIC_NETLIFY_PATH', plugin_dir_path( __FILE__ ) );
+define( 'WP2STATIC_FTP_PATH', plugin_dir_path( __FILE__ ) );
 
-require WP2STATIC_NETLIFY_PATH . 'vendor/autoload.php';
+require WP2STATIC_FTP_PATH . 'vendor/autoload.php';
 
 // @codingStandardsIgnoreStart
 $ajax_action = isset( $_POST['ajax_action'] ) ? $_POST['ajax_action'] : '';
@@ -41,7 +41,7 @@ if ( $ajax_action == 'test_ftp' ) {
     wp_die();
     return null;
 } elseif ( $ajax_action == 'ftp_transfer_files' ) {
-    $ftp = new WP2Static\Netlify();
+    $ftp = new WP2Static\FTP();
 
     $ftp->bootstrap();
     $ftp->upload_files();

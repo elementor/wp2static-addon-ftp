@@ -5,9 +5,10 @@
  * @package WP2Static
  */
 
-namespace FtpClient;
+namespace WP2Static;
 
 use \Countable;
+
 class FtpClient implements Countable
 {
     protected $conn;
@@ -15,7 +16,7 @@ class FtpClient implements Countable
     public function __construct($connection = null)
     {
         if (!extension_loaded('ftp')) {
-            throw new FtpException('FTP extension is not loaded!');
+            throw new Exception('FTP extension is not loaded!');
         }
 
         if ($connection) {
@@ -47,7 +48,7 @@ class FtpClient implements Countable
         }
 
         if (!$this->conn) {
-            throw new FtpException('Unable to connect');
+            throw new Exception('Unable to connect');
         }
 
         return $this;
@@ -72,7 +73,7 @@ class FtpClient implements Countable
         $result = $this->ftp->login($username, $password);
 
         if ($result === false) {
-            throw new FtpException('Login incorrect');
+            throw new Exception('Login incorrect');
         }
 
         return $this;
@@ -92,7 +93,7 @@ class FtpClient implements Countable
         $result = @$this->ftp->cdup();
 
         if ($result === false) {
-            throw new FtpException('Unable to get parent folder');
+            throw new Exception('Unable to get parent folder');
         }
 
         return $this;
@@ -100,13 +101,13 @@ class FtpClient implements Countable
     public function nlist($directory = '.', $recursive = false, $filter = 'sort')
     {
         if (!$this->isDir($directory)) {
-            throw new FtpException('"'.$directory.'" is not a directory');
+            throw new Exception('"'.$directory.'" is not a directory');
         }
 
         $files = $this->ftp->nlist($directory);
 
         if ($files === false) {
-            throw new FtpException('Unable to list directory');
+            throw new Exception('Unable to list directory');
         }
 
         $result  = array();
@@ -230,7 +231,7 @@ class FtpClient implements Countable
         $pwd = $this->ftp->pwd();
 
         if ($pwd === false) {
-            throw new FtpException('Unable to resolve the current directory');
+            throw new Exception('Unable to resolve the current directory');
         }
 
         if (@$this->ftp->chdir($directory)) {
@@ -286,7 +287,7 @@ class FtpClient implements Countable
             return $this;
         }
 
-        throw new FtpException('Unable to put the file "'.$remote_file.'"');
+        throw new Exception('Unable to put the file "'.$remote_file.'"');
     }
     public function putFromPath($local_file)
     {
@@ -298,7 +299,7 @@ class FtpClient implements Countable
             return $this;
         }
 
-        throw new FtpException(
+        throw new Exception(
             'Unable to put the remote file from the local file "'.$local_file.'"'
         );
     }
@@ -330,7 +331,7 @@ class FtpClient implements Countable
     public function rawlist($directory = '.', $recursive = false)
     {
         if (!$this->isDir($directory)) {
-            throw new FtpException('"'.$directory.'" is not a directory.');
+            throw new Exception('"'.$directory.'" is not a directory.');
         }
 
         $list  = $this->ftp->rawlist($directory);
@@ -476,7 +477,7 @@ class FtpClient implements Countable
     public function rawToType($permission)
     {
         if (!is_string($permission)) {
-            throw new FtpException('The "$permission" argument must be a string, "'
+            throw new Exception('The "$permission" argument must be a string, "'
             .gettype($permission).'" given.');
         }
 

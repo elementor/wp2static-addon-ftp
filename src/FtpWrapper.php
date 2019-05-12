@@ -5,7 +5,8 @@
  * @package WP2Static
  */
 
-namespace FtpClient;
+namespace WP2Static;
+
 class FtpWrapper
 {
     protected $conn;
@@ -22,7 +23,7 @@ class FtpWrapper
             return call_user_func_array($function, $arguments);
         }
 
-        throw new FtpException("{$function} is not a valid FTP function");
+        throw new Exception("{$function} is not a valid FTP function");
     }
     public function connect($host, $port = 21, $timeout = 90)
     {
