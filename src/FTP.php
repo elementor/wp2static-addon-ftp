@@ -12,7 +12,7 @@ class FTP extends SitePublisher {
         $port = $plugin->options->getOption( 'ftpPort' );
         $this->port = $port ? $port : 21;
         $this->use_ftps = $plugin->options->getOption( 'ftpTLS' );
-        $thia->ftp_server = $plugin->options->getOption( 'ftpServer' );
+        $this->ftp_server = $plugin->options->getOption( 'ftpServer' );
         $this->ftp_username = $plugin->options->getOption( 'ftpUsername' );
         $this->ftp_password = $plugin->options->getOption( 'ftpPassword' );
         $this->active_ftp = $plugin->options->getOption( 'activeFTP' );
