@@ -15,7 +15,7 @@ class FTPAddon {
     }
 
     public function add_deployment_option_to_ui( $deploy_options ) {
-        $deploy_options['ftp'] = array( 'FTP' );
+        $deploy_options['ftp'] = array('FTP');
 
         return $deploy_options;
     }

@@ -55,7 +55,6 @@ define( 'PLUGIN_NAME_VERSION', '0.1' );
 function run_wp2static_addon_ftp() {
     $plugin = new WP2Static\FTPAddon();
     $plugin->run();
-
 }
 
 run_wp2static_addon_ftp();
