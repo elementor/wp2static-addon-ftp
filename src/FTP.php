@@ -102,7 +102,7 @@ class FTP extends SitePublisher {
     }
 
     public function test_ftp() {
-        $this->ftp = new FTPClient();
+        $this->ftp = new \FtpClient\FtpClient();
 
         $this->ftp->connect(
             $this->ftp_server,
